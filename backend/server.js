@@ -13,6 +13,9 @@ app.use(express.json());
 /* const songsRouter = require('./routes/songs'); */
 const usersRouter = require("./routes/users");
 
+/* app.use('/songs', songsRouter) */
+app.use("/users", usersRouter);
+
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
 });
