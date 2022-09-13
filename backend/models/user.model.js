@@ -8,12 +8,12 @@ const userSchema = new Schema(
       type: String,
       required: true,
     }, */
-    /*     email: {
+    email: {
       type: String,
-      required: true,
+      required: [true, "Email is required"],
       unique: true,
       trim: true,
-    }, */
+    },
     /*     password: { type: String, required: true },
     gender: { type: String, required: true },
     month: { type: String, required: true },

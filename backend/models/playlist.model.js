@@ -4,8 +4,8 @@ const Schema = mongoose.Schema;
 
 const playlistSchema = new Schema(
   {
-    username: { type: String, ref: "user", required: true },
-    title: { type: String, required: true },
+    /* owner: { type: String, ref: "user", required: true }, */
+    name: { type: String, required: true },
     description: { type: String },
     songs: { type: Array, default: [] },
     img: { type: String },
@@ -15,6 +15,6 @@ const playlistSchema = new Schema(
   }
 );
 
-const Playlist = mongoose.model("User", playlistSchema);
+const Playlist = mongoose.model("Playlist", playlistSchema);
 
 module.exports = Playlist;

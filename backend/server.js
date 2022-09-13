@@ -1,9 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 const { errorHandler } = require("./middleware/errorMiddleware.js");
-const mongoose = require("mongoose");
+const colors = require("colors");
+const dotenv = require("dotenv").config();
+const connectDB = require("./config/db");
 
-require("dotenv").config();
+connectDB();
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -12,24 +14,16 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-/* const songsRouter = require('./routes/songs'); */
 const usersRouter = require("./routes/users");
+const playlistsRouter = require("./routes/playlists");
 
-/* app.use('/songs', songsRouter) */
 app.use("/users", usersRouter);
+app.use("/playlists", playlistsRouter);
 
 //Middlewares
 app.use(errorHandler);
+//End of Middlewares
 
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
-});
-
-const uri = process.env.ATLAS_URI;
-mongoose.connect(uri, {});
-
-const connection = mongoose.connection;
-
-connection.once("open", () => {
-  console.log("MongoDB database connection established successfully");
 });
