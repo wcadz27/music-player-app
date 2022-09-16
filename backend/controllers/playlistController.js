@@ -1,12 +1,13 @@
 const asyncHandler = require("express-async-handler");
 
 const Playlist = require("../models/playlist.model");
+const User = require("../models/user.model");
 
 // @desc Get all playlists
 // @route GET /users
 // @access Public
 const getPlaylists = asyncHandler(async (req, res) => {
-  const playlists = await Playlist.find();
+  const playlists = await Playlist.find({ creator: req.user.id });
   res.status(200).json(playlists);
 });
 
@@ -18,15 +19,13 @@ const createPlaylist = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Name is required for your playlist");
   }
-  /*   const user = await Playlist.findOne({ email: req.body.email });
-  if (user) {
-    return res.status(403).send({
-      message: "User with the same email already exists! Try another email.",
-    });
-  } */
 
-  let newPlaylist = await new Playlist({ ...req.body }).save();
-  res.status(200).send({ data: newPlaylist, message: "New playlist created" });
+  const newPlaylist = await Playlist.create({
+    name: req.body.name,
+    creator: req.user.id,
+  });
+
+  res.status(200).json(newPlaylist);
 });
 
 // @desc Update playlist info
@@ -37,7 +36,21 @@ const updatePlaylist = asyncHandler(async (req, res) => {
 
   if (!playlist) {
     res.status(400);
-    throw new Error("Goal not found");
+    throw new Error("Playlist not found");
+  }
+
+  const user = await User.findById(req.user.id);
+
+  //Check if user is available
+  if (!user) {
+    res.status(401);
+    throw new Error("User not found");
+  }
+
+  //Check if logged in user is the playlist creator
+  if (playlist.creator.toString() !== user.id) {
+    res.status(401);
+    throw new Error("User not authorized");
   }
 
   const updatedPlaylist = await Playlist.findByIdAndUpdate(
@@ -56,7 +69,21 @@ const deletePlaylist = asyncHandler(async (req, res) => {
 
   if (!playlist) {
     res.status(400);
-    throw new Error("Goal not found");
+    throw new Error("Playlist not found");
+  }
+
+  const user = await User.findById(req.user.id);
+
+  //Check if user is available
+  if (!user) {
+    res.status(401);
+    throw new Error("User not found");
+  }
+
+  //Check if logged in user is the playlist creator
+  if (playlist.creator.toString() !== user.id) {
+    res.status(401);
+    throw new Error("User not authorized");
   }
 
   await playlist.remove();

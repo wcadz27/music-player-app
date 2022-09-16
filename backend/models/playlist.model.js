@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
 
-const Schema = mongoose.Schema;
-
-const playlistSchema = new Schema(
+const playlistSchema = mongoose.Schema(
   {
-    /* owner: { type: String, ref: "user", required: true }, */
+    creator: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     name: { type: String, required: true },
     description: { type: String },
     songs: { type: Array, default: [] },

@@ -6,7 +6,12 @@ const {
   deletePlaylist,
 } = require("../controllers/playlistController");
 
-router.route("/").get(getPlaylists).post(createPlaylist);
-router.route("/:id").put(updatePlaylist).delete(deletePlaylist);
+const { protect } = require("../middleware/authMiddleware");
+
+router.route("/").get(protect, getPlaylists).post(protect, createPlaylist);
+router
+  .route("/:id")
+  .put(protect, updatePlaylist)
+  .delete(protect, deletePlaylist);
 
 module.exports = router;
